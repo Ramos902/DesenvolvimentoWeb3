@@ -46,7 +46,8 @@ Acesse em `http://localhost:8081`.
 | Método | Rota | Descrição |
 |---|---|---|
 | GET | `/` | Página inicial |
-| GET | `/livros` | Listagem de livros |
+| GET | `/livros` | Listagem de livros (aceita `?ordem=titulo|autor|ano|preco`) |
+| GET | `/livros/{id}` | Ficha detalhada do livro (com outros títulos do mesmo autor) |
 | GET | `/livros/novo` | Formulário de cadastro de livro |
 | POST | `/livros` | Cadastro de livro (com validação e PRG) |
 | GET | `/livros/busca` | Busca por título (`?titulo=...`) |

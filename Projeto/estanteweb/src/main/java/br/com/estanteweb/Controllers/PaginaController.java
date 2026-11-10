@@ -13,8 +13,12 @@ public class PaginaController {
     @GetMapping("/")
     @ResponseBody
     public String inicio(){
-        return "<h1> EstanteWeb: livros usados com história </h1>";
-    }
+        return "<h1> EstanteWeb: livros usados com história </h1>" + 
+                "<p> <a href='/'>Início</a> </p>" +
+                "<p> <a href='/livros'>Estante</a> </p>" +
+                "<p> <a href='/sobre'>Sobre</a> </p>" +
+                "<p> <a href='/contato'>Contato</a> </p>";
+            }
 
     @GetMapping("/sobre")
     @ResponseBody
