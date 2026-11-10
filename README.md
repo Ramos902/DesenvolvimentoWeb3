@@ -4,8 +4,9 @@ Repositório da disciplina de Programação para Web 3 (IFSP). Contém anotaçõ
 
 ## Estrutura
 
-- `docs/ResumoDesenvolvimentoWeb3.md`: Notas e resumos teóricos (aulas 1 a 9).
-- `Projeto/estanteweb/`: Projeto prático em Spring Boot.
+- `docs/Resumos_Prova/ResumoDesenvolvimentoWeb3.md`: Notas e resumos teóricos (aulas 1 a 9).
+- `Projeto/docker-compose.yml`: Orquestração dos containers da aplicação e do MySQL.
+- `Projeto/estanteweb/`: Aplicação Spring Boot e Dockerfile.
 
 ## Estante Web
 
@@ -19,27 +20,41 @@ Aplicação web para catálogo e gerenciamento de livros, sugestões e reservas.
 - Spring JDBC (`JdbcTemplate`)
 - MySQL 8
 - Flyway
+- Docker & Docker Compose
 
 ### Como rodar
 
-1. Suba o container do MySQL:
+#### Opção 1: Com Docker Compose (recomendado)
+
+Inicie os containers da aplicação e do MySQL a partir da pasta `Projeto/`:
 
 ```bash
-docker run --name estanteweb-mysql \
-  -e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
-  -e MYSQL_DATABASE=estanteweb \
-  -p 3306:3306 \
-  -d mysql:8
-```
-
-2. Inicie a aplicação:
-
-```bash
-cd Projeto/estanteweb
-./mvnw spring-boot:run
+cd Projeto
+docker compose up -d --build
 ```
 
 Acesse em `http://localhost:8081`.
+
+Comandos úteis:
+- Ver logs da aplicação: `docker compose logs -f app`
+- Recompilar após alterar o código: `docker compose up -d --build app`
+- Parar containers: `docker compose down`
+
+#### Opção 2: Localmente (Spring Boot com MySQL no Docker)
+
+Caso prefira rodar com o Spring Boot DevTools ativo na sua máquina:
+
+1. Suba apenas o MySQL:
+```bash
+cd Projeto
+docker compose up -d mysql
+```
+
+2. Execute a aplicação via Maven:
+```bash
+cd estanteweb
+./mvnw spring-boot:run
+```
 
 ### Rotas
 
