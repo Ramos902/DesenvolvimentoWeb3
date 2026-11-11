@@ -57,22 +57,55 @@ public class LivroController {
     }
 
     @PostMapping ("/livros/editar/{id}")
-    public String editarLivro(@PathVariable Long id,
-        @RequestParam String titulo,
-        @RequestParam String autor,
-        @RequestParam int ano,
-        @RequestParam double preco,
-        Model model){ 
-        Livro livro = repositorio.buscarPorId(id);
-        if(livro == null) {
+    public String editarLivro(
+            @PathVariable Long id,
+            @RequestParam String titulo,
+            @RequestParam String autor,
+            @RequestParam int ano,
+            @RequestParam double preco,
+            Model model){ 
+
+        Livro livroExistente = repositorio.buscarPorId(id);
+        if(livroExistente == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Livro não encontrado");
         }
-        livro.setTitulo(titulo);
-        livro.setAutor(autor);
-        livro.setAno(ano);
-        livro.setPreco(preco);
-        repositorio.atualizar(livro);
-        return "redirect:/livros";
+
+        // Validação com as mesmas regras do cadastro
+        if (titulo.isBlank() || autor.isBlank() || preco <= 0) {
+            if (titulo.isBlank()) {
+                model.addAttribute("erro", "O título não pode estar em branco.");
+            } else if (autor.isBlank()) {
+                model.addAttribute("erro", "O autor não pode estar em branco.");
+            } else {
+                model.addAttribute("erro", "O preço deve ser maior que zero.");
+            }
+            Livro livroInvalido = new Livro();
+            livroInvalido.setId(id);
+            livroInvalido.setTitulo(titulo);
+            livroInvalido.setAutor(autor);
+            livroInvalido.setAno(ano);
+            livroInvalido.setPreco(preco);
+            model.addAttribute("livro", livroInvalido);
+            return "livro-editar";
+        }
+
+        livroExistente.setTitulo(titulo);
+        livroExistente.setAutor(autor);
+        livroExistente.setAno(ano);
+        livroExistente.setPreco(preco);
+
+        repositorio.atualizar(livroExistente);
+        return "redirect:/livros/" + id;
+    }
+
+    @GetMapping("/livros/excluir/{id}")
+    public String confirmarExclusao(@PathVariable Long id, Model model) {
+        Livro livro = repositorio.buscarPorId(id);
+        if (livro == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Livro não encontrado");
+        }
+        model.addAttribute("livro", livro);
+        return "livro-excluir";
     }
 
     @PostMapping ("/livros/excluir/{id}")
@@ -82,7 +115,7 @@ public class LivroController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Livro não encontrado");
         }
         repositorio.excluir(id);
-        return "redirect:/livros";
+        return "redirect:/livros/html";
     }
 
     @GetMapping("/livros/novo")

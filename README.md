@@ -62,7 +62,11 @@ cd estanteweb
 |---|---|---|
 | GET | `/` | Página inicial |
 | GET | `/livros` | Listagem de livros (aceita `?ordem=titulo|autor|ano|preco`) |
-| GET | `/livros/{id}` | Ficha detalhada do livro (com outros títulos do mesmo autor) |
+| GET | `/livros/{id}` | Ficha detalhada do livro (com links para editar e remover) |
+| GET | `/livros/editar/{id}` | Formulário de edição com dados atuais pré-carregados |
+| POST | `/livros/editar/{id}` | Salva alterações com validação e padrão PRG |
+| GET | `/livros/excluir/{id}` | Tela de confirmação antes de remover o livro |
+| POST | `/livros/excluir/{id}` | Remoção segura do livro no banco de dados |
 | GET | `/livros/novo` | Formulário de cadastro de livro |
 | POST | `/livros` | Cadastro de livro (com validação e PRG) |
 | GET | `/livros/busca` | Busca por título (`?titulo=...`) |
