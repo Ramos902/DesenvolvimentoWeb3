@@ -20,10 +20,11 @@
             <li>Autor: ${livro.autor}</li>
             <li>Ano: ${livro.ano?c}</li>
             <li>Preço: R$ ${livro.preco?string["0.00"]}</li>
-            <li><form action="/livros/editar/${livro.id?c}" method="get" style="display:inline;">
+            <li>
+                <form action="/livros/editar/${livro.id?c}" method="get" style="display:inline;">
                     <input type="submit" value="Editar">
                 </form> |
-                <form action="/livros/excluir/${livro.id?c}" method="post" style="display:inline;" onsubmit="return confirm('Deseja realmente excluir o livro \'${livro.titulo?js_string}\'?');">
+                <form action="/livros/excluir/${livro.id?c}" method="get" style="display:inline;">
                     <input type="submit" value="Excluir">
                 </form>
             </li>
