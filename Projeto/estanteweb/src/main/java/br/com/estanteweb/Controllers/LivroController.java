@@ -75,6 +75,16 @@ public class LivroController {
         return "redirect:/livros";
     }
 
+    @PostMapping ("/livros/excluir/{id}")
+    public String excluirLivro(@PathVariable Long id) {
+        Livro livro = repositorio.buscarPorId(id);
+        if (livro == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Livro não encontrado");
+        }
+        repositorio.excluir(id);
+        return "redirect:/livros";
+    }
+
     @GetMapping("/livros/novo")
     public String novoLivro() {
         return "livro-novo";
