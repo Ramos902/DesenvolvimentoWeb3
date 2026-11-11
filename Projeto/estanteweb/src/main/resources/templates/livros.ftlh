@@ -18,7 +18,10 @@
         <#list livros as livro>
             <li><strong>Livro:</strong> <a href="/livros/${livro.id?c}">${livro.titulo}</a></li>
             <li>Autor: ${livro.autor}</li>
+            <li>Ano: ${livro.ano?c}</li>
             <li>Preço: R$ ${livro.preco?string["0.00"]}</li>
+            <li><a href="/livros/editar/${livro.id?c}">Editar</a></li>
+            <li><a href="/livros/excluir/${livro.id?c}">Excluir</a></li>
             <br>
         </#list>
     </#if>

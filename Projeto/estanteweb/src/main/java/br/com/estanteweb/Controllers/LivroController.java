@@ -24,17 +24,6 @@ public class LivroController {
     @Autowired
     private LivroRepository repositorio;
 
-    /*
-     * Missão 4.1 (Navegação entre Recursos):
-     * Permite ordenar a listagem via query string (?ordem=preco, ?ordem=titulo, etc.).
-     * Se o parâmetro não for informado, exibe na ordem padrão.
-     *
-     * Reflexão Missão 4:
-     * O valor da ordenação foi para a query string (?ordem=...) porque ele apenas ajusta
-     * a forma de representação e exibição de um mesmo recurso (a coleção de livros).
-     * Já o identificador do livro foi para o caminho (/livros/{id}) na Missão 1 porque ele identifica
-     * um recurso único e específico dentro da hierarquia da aplicação.
-     */
     @GetMapping({"/livros", "/livros/html"})
     public String listar(@RequestParam(required = false) String ordem, Model container) {
         if (ordem != null && !ordem.isBlank()) {
@@ -45,23 +34,6 @@ public class LivroController {
         return "livros";
     }
 
-    /*
-     * Missões 1.3 e 2.2 (Navegação entre Recursos):
-     * Ficha individual de um livro identificada pelo seu id no caminho da URL.
-     * Se o livro não for encontrado, lança ResponseStatusException com status HTTP 404.
-     *
-     * Reflexão Missão 1:
-     * O ID foi colocado no caminho da URL (/livros/{id}) porque identifica univocamente um recurso
-     * na hierarquia da aplicação. Para o cliente da loja, a grande vantagem é ter uma URL canônica,
-     * amigável e permanente, fácil de compartilhar com amigos, salvar nos favoritos e com melhor indexação (SEO).
-     *
-     * Reflexão Missão 2:
-     * - /livros/999 devolve 404 (Not Found): a requisição é sintaticamente correta, mas o recurso não existe no banco.
-     * - /livros/abc devolve 400 (Bad Request): a requisição é malformada sintaticamente (falha de conversão String->Long)
-     *   e o erro ocorre antes mesmo de o corpo do método executar (durante o data binding do Spring).
-     * Não faria sentido usar o mesmo código pois 400 indica erro na sintaxe do pedido, enquanto 404 indica
-     * que o pedido está correto, mas o registro de negócio inexiste.
-     */
     @GetMapping("/livros/{id}")
     public String exibirLivro(@PathVariable Long id, Model model) {
         Livro livro = repositorio.buscarPorId(id);
@@ -72,6 +44,35 @@ public class LivroController {
         // Missão 4.4 Desafio: outros títulos do mesmo autor
         model.addAttribute("outrosLivros", repositorio.listarDoMesmoAutor(livro.getAutor(), id));
         return "livro";
+    }
+
+    @GetMapping ("/livros/editar/{id}")
+    public String editarLivro(@PathVariable Long id, Model model){
+        Livro livro = repositorio.buscarPorId(id);
+        if(livro == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Livro não encontrado");
+        }
+        model.addAttribute("livro", livro);
+        return "livro-editar";
+    }
+
+    @PostMapping ("/livros/editar/{id}")
+    public String editarLivro(@PathVariable Long id,
+        @RequestParam String titulo,
+        @RequestParam String autor,
+        @RequestParam int ano,
+        @RequestParam double preco,
+        Model model){ 
+        Livro livro = repositorio.buscarPorId(id);
+        if(livro == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Livro não encontrado");
+        }
+        livro.setTitulo(titulo);
+        livro.setAutor(autor);
+        livro.setAno(ano);
+        livro.setPreco(preco);
+        repositorio.atualizar(livro);
+        return "redirect:/livros";
     }
 
     @GetMapping("/livros/novo")
